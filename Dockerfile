@@ -1,4 +1,3 @@
-version: '3.8'
 # Use official PHP image with Apache
 FROM php:8.2-apache
 
@@ -40,4 +39,5 @@ EXPOSE 80
 
 # Start Apache
 CMD ["apache2-foreground"]
+
 
