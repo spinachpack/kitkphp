@@ -1,22 +1,25 @@
 # Use official PHP image with Apache
 FROM php:8.2-apache
 
-# Install MySQLi extension (needed for $conn = new mysqli(...))
+# Install MySQLi extension
 RUN docker-php-ext-install mysqli
 
-# Enable URL rewriting (for .htaccess if needed)
+# Enable URL rewriting for .htaccess
 RUN a2enmod rewrite
 
-# Copy your project files to Apache's web directory
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy project files into container
 COPY . /var/www/html/
 
-# Make upload directories writable by Apache
-RUN mkdir -p /var/www/html/uploads/profiles /var/www/html/uploads/equipment \
-    && chown -R www-data:www-data /var/www/html/uploads \
-    && chmod -R 755 /var/www/html/uploads
+# Create upload folders and set proper permissions
+RUN mkdir -p uploads/profiles uploads/equipment \
+    && chown -R www-data:www-data uploads \
+    && chmod -R 755 uploads
 
 # Expose web server port
 EXPOSE 80
 
-# Start Apache
+# Start Apache in foreground
 CMD ["apache2-foreground"]
