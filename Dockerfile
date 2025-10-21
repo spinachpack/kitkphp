@@ -4,18 +4,22 @@ FROM php:8.2-apache
 # Install mysqli extension
 RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 
-# Enable Apache mod_rewrite if your app needs clean URLs
+# Enable Apache mod_rewrite if needed
 RUN a2enmod rewrite
 
-# Copy all app files into the web root
+# Copy app files
 COPY . /var/www/html/
 
-# Set proper permissions for uploads
-RUN mkdir -p /var/www/html/uploads/profiles /var/www/html/uploads/equipment \
-    && chmod -R 777 /var/www/html/uploads
+# Make sure the Apache user owns the app directory
+RUN chown -R www-data:www-data /var/www/html
+
+# Create upload directories and ensure writable permissions
+RUN mkdir -p /var/www/html/uploads/profiles /var/www/html/uploads/equipment && \
+    chmod -R 775 /var/www/html/uploads && \
+    chown -R www-data:www-data /var/www/html/uploads
 
 # Expose port 80 for Render
 EXPOSE 80
 
-# Start Apache
+# Run Apache in the foreground
 CMD ["apache2-foreground"]
