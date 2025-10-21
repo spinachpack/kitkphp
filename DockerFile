@@ -1,14 +1,22 @@
-FROM php:8.2-apache
+version: '3.8'
 
-# Enable Apache Rewrite Module
-RUN a2enmod rewrite
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
 
-WORKDIR /var/www/html
-
-# Copy project files
-COPY . .
-
-# Expose port
-EXPOSE 80
-
-CMD ["apache2-foreground"]
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: kitkeeper_db
+      MYSQL_USER: kitkeeper_user
+      MYSQL_PASSWORD: mypassword
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
