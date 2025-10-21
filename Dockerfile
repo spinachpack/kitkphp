@@ -1,39 +1,43 @@
+@@ -1,22 +1,22 @@
+version: '3.8'
 # Use official PHP image with Apache
 FROM php:8.2-apache
 
-# Install system dependencies and PHP extensions
-RUN apt-get update && apt-get install -y \
-    libpng-dev libjpeg-dev libfreetype6-dev zip unzip git curl \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd mysqli pdo_mysql \
-    && rm -rf /var/lib/apt/lists/*
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+# Install MySQLi extension (needed for $conn = new mysqli(...))
+RUN docker-php-ext-install mysqli
 
-# Enable Apache mod_rewrite
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: sql12.freesqldatabase.com
+      MYSQL_USER: sql12803943
+      MYSQL_PASSWORD: c7Qml3hX7b
+      MYSQL_ROOT_PASSWORD: sql12803943
+    ports:
+      - "3306:3306"
+# Enable URL rewriting (for .htaccess if needed)
 RUN a2enmod rewrite
 
-# Set working directory
-WORKDIR /var/www/html
-
-# Copy project files
+# Copy your project files to Apache's web directory
 COPY . /var/www/html/
 
-# Ensure upload directories exist and are writable by PHP
-RUN mkdir -p uploads/profiles uploads/equipment \
-    && chown -R www-data:www-data uploads \
-    && chmod -R 755 uploads
+# Make upload directories writable by Apache
+RUN mkdir -p /var/www/html/uploads/profiles /var/www/html/uploads/equipment \
+    && chown -R www-data:www-data /var/www/html/uploads \
+    && chmod -R 755 /var/www/html/uploads
 
-# Configure Apache to allow .htaccess parsing
-RUN cat <<EOT > /etc/apache2/conf-available/docker-php.conf
-<Directory /var/www/html>
-    Options Indexes FollowSymLinks
-    AllowOverride All
-    Require all granted
-</Directory>
-EOT
-RUN a2enconf docker-php
-
-# Expose HTTP port
+# Expose web server port
 EXPOSE 80
 
-# Start Apache in foreground
+# Start Apache
 CMD ["apache2-foreground"]
