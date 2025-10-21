@@ -1,43 +1,21 @@
-# Use official PHP image with Apache
+# Use the official PHP + Apache image
 FROM php:8.2-apache
 
-services:
-  web:
-    build: .
-    ports:
-      - "8080:80"
-    volumes:
-      - .:/var/www/html
-    depends_on:
-      - db
-# Install MySQLi extension (needed for $conn = new mysqli(...))
-RUN docker-php-ext-install mysqli
+# Install mysqli extension
+RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
 
-  db:
-    image: mysql:8.0
-    restart: always
-    environment:
-      MYSQL_DATABASE: sql12.freesqldatabase.com
-      MYSQL_USER: sql12803943
-      MYSQL_PASSWORD: c7Qml3hX7b
-      MYSQL_ROOT_PASSWORD: sql12803943
-    ports:
-      - "3306:3306"
-# Enable URL rewriting (for .htaccess if needed)
+# Enable Apache mod_rewrite if your app needs clean URLs
 RUN a2enmod rewrite
 
-# Copy your project files to Apache's web directory
+# Copy all app files into the web root
 COPY . /var/www/html/
 
-# Make upload directories writable by Apache
+# Set proper permissions for uploads
 RUN mkdir -p /var/www/html/uploads/profiles /var/www/html/uploads/equipment \
-    && chown -R www-data:www-data /var/www/html/uploads \
-    && chmod -R 755 /var/www/html/uploads
+    && chmod -R 777 /var/www/html/uploads
 
-# Expose web server port
+# Expose port 80 for Render
 EXPOSE 80
 
 # Start Apache
 CMD ["apache2-foreground"]
-
-
