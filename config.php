@@ -81,12 +81,12 @@ function clean($data) {
 
 // Helper function to get profile picture URL
 function getProfilePicture($filename) {
-    if (empty($filename) || $filename === 'default-avatar.png' || !file_exists(PROFILE_UPLOAD_DIR . $filename)) {
-        // Return default avatar using UI Avatars API
-        $initials = strtoupper(substr($_SESSION['first_name'], 0, 1) . substr($_SESSION['last_name'], 0, 1));
-        return "https://ui-avatars.com/api/?name=" . urlencode($_SESSION['first_name'] . '+' . $_SESSION['last_name']) . "&size=200&background=1e5a96&color=fff&bold=true";
+    if (empty($filename) || !file_exists(PROFILE_UPLOAD_DIR . $filename)) {
+        return BASE_URL . PROFILE_UPLOAD_DIR . 'default-avatar.png';
     }
     return BASE_URL . PROFILE_UPLOAD_DIR . $filename;
 }
 
+
 ?>
+
