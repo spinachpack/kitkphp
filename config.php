@@ -1,9 +1,16 @@
 <?php
 // Database Configuration
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'kitkeeper_db');
+// define('DB_HOST', 'localhost');
+// define('DB_USER', 'root');
+// define('DB_PASS', '');
+// define('DB_NAME', 'kitkeeper_db');
+
+define('DB_HOST', 'sql12.freesqldatabase.com');
+define('DB_USER', 'sql12803943');
+define('DB_PASS', 'c7Qml3hX7b');
+define('DB_NAME', 'sql12803943');
+
+
 
 // Create connection
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);

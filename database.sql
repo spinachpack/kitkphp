@@ -1,6 +1,6 @@
--- Create Database
-CREATE DATABASE IF NOT EXISTS kitkeeper_db;
-USE kitkeeper_db;
+-- -- Create Database
+-- CREATE DATABASE IF NOT EXISTS kitkeeper_db;
+-- USE kitkeeper_db;
 
 -- Users Table
 CREATE TABLE IF NOT EXISTS users (
@@ -93,4 +93,4 @@ INSERT INTO equipment (name, category_id, description, quantity, available_quant
 ('Football/Soccer Ball', 2, 'FIFA standard soccer ball', 8, 8, 'available'),
 ('Badminton Racket Set', 2, 'Complete badminton racket set with shuttlecocks', 12, 12, 'available'),
 ('Table Tennis Set', 2, 'Table tennis paddles and balls set', 6, 6, 'available'),
-('LCD Projector', 3, 'Full HD projector 3000 lumens with HDMI', 5, 5, 'available'),
+('LCD Projector', 3, 'Full HD projector 3000 lumens with HDMI', 5, 5, 'available')
