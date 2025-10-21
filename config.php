@@ -88,5 +88,4 @@ function getProfilePicture($filename) {
 }
 
 
-?>
 
