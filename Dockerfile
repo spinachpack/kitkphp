@@ -1,25 +1,44 @@
 # Use official PHP image with Apache
-FROM php:8.2-apache
+FROM php:8.1-apache
 
-# Install MySQLi extension
-RUN docker-php-ext-install mysqli
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    zip \
+    unzip \
+    git \
+    curl \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install mysqli pdo pdo_mysql
 
-# Enable URL rewriting for .htaccess
+# Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy project files into container
+# Copy application files
 COPY . /var/www/html/
 
-# Create upload folders and set proper permissions
+# Create upload directories and set permissions
 RUN mkdir -p uploads/profiles uploads/equipment \
-    && chown -R www-data:www-data uploads \
-    && chmod -R 755 uploads
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html \
+    && chmod -R 777 uploads
 
-# Expose web server port
+# Configure Apache to allow .htaccess
+RUN echo '<Directory /var/www/html>\n\
+    Options Indexes FollowSymLinks\n\
+    AllowOverride All\n\
+    Require all granted\n\
+</Directory>' > /etc/apache2/conf-available/docker-php.conf \
+    && a2enconf docker-php
+
+# Expose port 80
 EXPOSE 80
 
-# Start Apache in foreground
+# Start Apache
 CMD ["apache2-foreground"]
