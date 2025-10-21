@@ -110,6 +110,16 @@ $recent_bookings = $conn->query($recent_bookings_sql);
             border-radius: 20px;
             font-size: 0.85rem;
         }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+                position: relative;
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -123,20 +133,17 @@ $recent_bookings = $conn->query($recent_bookings_sql);
             <a class="nav-link active" href="dashboard.php">
                 <i class="fas fa-tachometer-alt me-2"></i> Dashboard
             </a>
-            <a class="nav-link" href="../admin/manage_equipment.php">
+            <a class="nav-link" href="manage_equipment.php">
                 <i class="fas fa-box me-2"></i> Manage Equipment
             </a>
-            <a class="nav-link" href="../admin/manage_bookings.php">
+            <a class="nav-link" href="manage_bookings.php">
                 <i class="fas fa-calendar-check me-2"></i> Manage Bookings
                 <?php if ($pending_bookings > 0): ?>
                     <span class="badge bg-warning"><?php echo $pending_bookings; ?></span>
                 <?php endif; ?>
             </a>
-            <a class="nav-link" href="../admin/profile.php">
+            <a class="nav-link" href="profile.php">
                 <i class="fas fa-user me-2"></i> My Profile
-            </a>
-            <a class="nav-link" href="../admin/change_password.php">
-                <i class="fas fa-key me-2"></i> Change Password
             </a>
             <a class="nav-link" href="../logout.php">
                 <i class="fas fa-sign-out-alt me-2"></i> Logout
