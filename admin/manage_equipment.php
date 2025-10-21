@@ -96,7 +96,7 @@ if (isset($_POST['edit_equipment'])) {
     $sql = "UPDATE equipment SET name = ?, category_id = ?, description = ?, quantity = ?, 
             available_quantity = ?, status = ? $image_update WHERE id = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sissiisi", $name, $category_id, $description, $quantity, $available_quantity, $status, $equip_id);
+    $stmt->bind_param("sisissi", $name, $category_id, $description, $quantity, $available_quantity, $status, $equip_id);
     
     if ($stmt->execute()) {
         $success = "Equipment updated successfully!";
