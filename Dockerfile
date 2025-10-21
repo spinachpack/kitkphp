@@ -1,18 +1,12 @@
 # Use official PHP image with Apache
 FROM php:8.1-apache
 
-# Install system dependencies
+# Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    zip \
-    unzip \
-    git \
-    curl \
+    libpng-dev libjpeg-dev libfreetype6-dev zip unzip git curl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd \
-    && docker-php-ext-install mysqli pdo pdo_mysql
+    && docker-php-ext-install -j$(nproc) gd mysqli pdo_mysql \
+    && rm -rf /var/lib/apt/lists/*
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
@@ -20,25 +14,26 @@ RUN a2enmod rewrite
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy application files
+# Copy project files
 COPY . /var/www/html/
 
-# Create upload directories and set permissions
+# Ensure Apache can read and write uploads
 RUN mkdir -p uploads/profiles uploads/equipment \
-    && chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
-    && chmod -R 777 uploads
+    && chown -R www-data:www-data uploads \
+    && chmod -R 755 uploads
 
-# Configure Apache to allow .htaccess
-RUN echo '<Directory /var/www/html>\n\
-    Options Indexes FollowSymLinks\n\
-    AllowOverride All\n\
-    Require all granted\n\
-</Directory>' > /etc/apache2/conf-available/docker-php.conf \
-    && a2enconf docker-php
+# Configure Apache to allow .htaccess parsing
+RUN cat <<EOT > /etc/apache2/conf-available/docker-php.conf
+<Directory /var/www/html>
+    Options Indexes FollowSymLinks
+    AllowOverride All
+    Require all granted
+</Directory>
+EOT
+RUN a2enconf docker-php
 
-# Expose port 80
+# Expose HTTP port
 EXPOSE 80
 
-# Start Apache
+# Start Apache in foreground
 CMD ["apache2-foreground"]
