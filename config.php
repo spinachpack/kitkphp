@@ -29,7 +29,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Base URL
-define('BASE_URL', 'http://localhost:1800/');
+define('BASE_URL', 'https://kitkphp.onrender.com/');
 
 // Upload directory
 define('UPLOAD_DIR', 'uploads/');
@@ -88,4 +88,5 @@ function getProfilePicture($filename) {
     }
     return BASE_URL . PROFILE_UPLOAD_DIR . $filename;
 }
+
 ?>
